@@ -1,0 +1,136 @@
+﻿@model IEnumerable<Project2_implement_Theme.Models.StudentInfo>
+
+<h2>Student Record</h2>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <button class="btn btn-primary" onclick="CreateForm()">Add New Student</button>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.City)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.PinCode)
+                        </th>
+                        <th>
+                            @Html.Label("Action")
+                        </th>
+                    </tr>
+                </thead>
+
+                @foreach (var item in Model)
+                {
+                    <tbody>
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.City)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PinCode)
+                            </td>
+
+                            <td>
+                                <button class="btn btn-success" onclick="EditForm(@item.id)">Edit</button> |
+
+                                <button class="btn btn-danger" onclick="DeleteForm(@item.id)">Delete</button>
+
+                            </td>
+                        </tr>
+                    </tbody>
+                }
+
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="container" style="width:40%;margin-top:2%">
+
+</div>
+
+
+@*Modal Dialog Popup*@
+<div class="modal fade" tabindex="-1" id="mainDivModal" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body-CreateStudentModal modal-body table-condensed" id="bodyDivModal"></div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+<script type="text/javascript">
+
+    function CreateForm() {
+        $.ajax({
+            type: "GET",
+            url: "/Student/CreateOrEdit/",
+            contentType: "application/json; charset=utf-8",
+            datatype: "json",
+            success: function (data) {
+                console.log("Success:");
+                $('#bodyDivModal').html(data);
+                $('#mainDivModal').modal('show');
+            },
+            error: function (response) {
+                console.log("Error:", response);
+                alert(response.error);
+            }
+        });
+    }
+
+    function EditForm(ID) {
+        $.ajax({
+            type: "GET",
+            url: "/Student/CreateOrEdit/" + ID,
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                $('#bodyDivModal').html(data);
+                $('#mainDivModal').modal('show');
+            },
+            error: function (response) {
+                alert(response.error);
+            }
+        });
+    }
+
+    function DeleteForm(ID) {
+
+        $.ajax({
+            type: "GET",
+            url: "/Student/Delete/" + ID,
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                $('#bodyDivModal').html(data);
+                $('#mainDivModal').modal('show');
+            },
+            error: function (response) {
+                alert(response.error);
+            }
+
+        });
+    }
+
+    function CloseModel() {
+        $('#mainDivModal').modal('hide');
+    }
+
+</script>
+
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>

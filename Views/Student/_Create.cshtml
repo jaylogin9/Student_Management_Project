@@ -1,0 +1,93 @@
+﻿@model Project2_implement_Theme.Models.StudentInfo
+
+<div class="form-horizontal">
+    <h4 id="heading">
+        @if (Model.id > 0)
+        {
+            @:Edit Student
+        }
+        else
+        {
+            @:Create Student
+        }
+    </h4>
+    <hr />
+    <form id="myForm" method="post">
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.id)
+
+       
+        <div class="form-group">
+
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.City, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PinCode, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.PinCode, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.PinCode, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        @*set the button value, appling condition id>0.*@
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @if (Model.id > 0)
+                {
+                    <input type="submit" value="Update" class="btn btn-primary" />
+                    <button type="button" class="btn btn-secondary" onclick="CloseModel()">Close</button>
+                }
+                else
+                {
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                    <button type="button" class="btn btn-secondary" onclick="CloseModel()">Close</button>
+                }
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $("#myForm").on("submit", function (event) {
+            event.preventDefault();
+            let modelId = $('#myForm input[name="id"]').val();
+            $.ajax({
+                type: "POST",
+                url: '/Student/CreateOrEdit/' + modelId,
+                data: $('#myForm').serialize(),
+                success: function (res) {
+                    if (res.success)
+                    {
+                        /*console.log(res.message);*/
+                        $('#mainDivModal').modal('hide');
+                        location.reload();
+                    } else {
+                        $('#bodyDivModal').html(res);
+                    }
+                   
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+</script>
+
+

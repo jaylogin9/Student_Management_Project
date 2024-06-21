@@ -1,0 +1,75 @@
+﻿@model Project2_implement_Theme.Models.StudentInfo
+
+<form id="myForm" method="post">
+    @Html.AntiForgeryToken()
+
+    <h2>Delete</h2>
+    <h3>Are you sure you want to delete this?</h3>
+    <div>
+        <hr />
+        <dl class="dl-horizontal">
+            @Html.HiddenFor(model => model.id)
+            <dt>
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.City)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.City)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.PinCode)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.PinCode)
+            </dd>
+
+        </dl>
+
+
+        <div class="form-actions">
+            <input type="submit" value="Delete" class="btn btn-primary" />
+            <button type="button" class="btn btn-secondary" onclick="CloseModel()">Close</button>
+        </div>
+
+    </div>
+</form>
+
+<script>
+    $(document).ready(function () {
+        $("#myForm").on("submit", function (event) {
+            event.preventDefault();
+            let modelId = $('#myForm input[name="id"]').val();
+            let token = $('input[name="__RequestVerificationToken"]').val();
+            $.ajax({
+                type: "POST",
+                url: '/Student/Delete/' + modelId,
+                data: {
+                    __RequestVerificationToken: token
+                },
+                success: function (response) {
+                    if (response.success) {
+                        /*$('#bodyDivModal').text(response.message).css('color', 'green');*/
+                        $('#mainDivModal').modal('hide');
+                        location.reload();
+                    } else {
+                        $('#bodyDivModal').text(response.message).css('color', 'red');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $('#bodyDivModal').text('Error deleting the record').css('color', 'red');
+                    console.error(error);
+                }
+            });
+        });
+    });
+</script>
